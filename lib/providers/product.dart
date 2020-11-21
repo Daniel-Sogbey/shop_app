@@ -23,9 +23,4 @@ class Product with ChangeNotifier {
     isFavorite = !isFavorite;
     notifyListeners();
   }
-
-  void addToCart() {
-    isAddedToCart = !isAddedToCart;
-    notifyListeners();
-  }
 }
