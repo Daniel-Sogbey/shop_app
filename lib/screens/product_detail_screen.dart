@@ -4,10 +4,10 @@ class ProductDetailScreen extends StatelessWidget {
   static const routeName = '/product-detail';
   @override
   Widget build(BuildContext context) {
-    final productTitle = ModalRoute.of(context).settings.arguments as String;
+    final productId = ModalRoute.of(context).settings.arguments as String;
     return Scaffold(
       appBar: AppBar(
-        title: Text(productTitle),
+        title: Text(productId),
       ),
       body: Center(
         child: Text('Detail'),
