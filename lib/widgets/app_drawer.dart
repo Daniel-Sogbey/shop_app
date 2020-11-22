@@ -3,22 +3,19 @@ import 'package:flutter/material.dart';
 import '../screens/orders_screen.dart';
 
 class AppDrawer extends StatelessWidget {
-  List<Widget> _buildOrderNavigationLinks(
+  Widget _buildOrderNavigationLinks(
     BuildContext context,
     IconData iconType,
     String titleText,
     Function routeToGo,
   ) {
-    return [
-      Divider(),
-      ListTile(
-        leading: Icon(
-          iconType,
-        ),
-        title: Text(titleText),
-        onTap: routeToGo,
+    return ListTile(
+      leading: Icon(
+        iconType,
       ),
-    ];
+      title: Text(titleText),
+      onTap: routeToGo,
+    );
   }
 
   @override
@@ -31,6 +28,7 @@ class AppDrawer extends StatelessWidget {
               title: Text('Your Orders Friend'),
               automaticallyImplyLeading: false,
             ),
+            Divider(),
             _buildOrderNavigationLinks(
               context,
               Icons.shop,
@@ -38,7 +36,8 @@ class AppDrawer extends StatelessWidget {
               () {
                 Navigator.of(context).pushReplacementNamed('/');
               },
-            )[0],
+            ),
+            Divider(),
             _buildOrderNavigationLinks(
               context,
               Icons.payment,
@@ -47,7 +46,7 @@ class AppDrawer extends StatelessWidget {
                 Navigator.of(context)
                     .pushReplacementNamed(OrdersScreen.routeName);
               },
-            )[1],
+            ),
           ],
         ),
       ),
