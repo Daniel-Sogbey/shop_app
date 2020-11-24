@@ -34,6 +34,5 @@ class Orders with ChangeNotifier {
       ),
     );
     notifyListeners();
-    notifyListeners();
   }
 }
