@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
-          primarySwatch: Colors.purple,
+          primaryColor: Color(0xffe203e9),
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
           textTheme: TextTheme(
