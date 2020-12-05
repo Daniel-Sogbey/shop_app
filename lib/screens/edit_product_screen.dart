@@ -80,7 +80,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -102,15 +102,23 @@ class _EditProductScreenState extends State<EditProductScreen> {
         Navigator.of(context).pop();
       });
     } else {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
-          .catchError((error) {
-        return showDialog<Null>(
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog<Null>(
             context: context,
             builder: (ctx) {
               return AlertDialog(
-                title: Text(
+                content: Text(
                   'Something went wrong',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22.0,
+                  ),
+                ),
+                title: Text(
+                  'An Error Occurred',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22.0,
@@ -134,17 +142,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ],
               );
             });
-      }).then(
-        (response) {
-          Future.delayed(Duration(seconds: 3), () {
-            setState(() {
-              _isLoading = false;
-            });
-
-            Navigator.of(context).pop();
+      } finally {
+        Future.delayed(Duration(seconds: 3), () {
+          setState(() {
+            _isLoading = false;
           });
-        },
-      );
+
+          Navigator.of(context).pop();
+        });
+      }
     }
 
     // Navigator.of(context).pop();
@@ -164,16 +170,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
       ]),
       body: _isLoading
           ? Center(
-              child: Card(
-                elevation: 6.0,
-                color: Theme.of(context).primaryColor,
+              child: Container(
+                width: 100,
+                height: 100,
                 margin: EdgeInsets.all(100.0),
-                child: Container(
-                  margin: EdgeInsets.all(50.0),
-                  child: LoadingIndicator(
-                    indicatorType: Indicator.ballRotateChase,
-                    color: Colors.white,
-                  ),
+                child: LoadingIndicator(
+                  indicatorType: Indicator.ballRotateChase,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             )
