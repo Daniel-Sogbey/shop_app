@@ -114,9 +114,40 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product newProduct) {
+//   void updateProduct(String id, Product newProduct) {
+//     final productIndex = _items.indexWhere((product) => product.id == id);
+//     if (productIndex >= 0) {
+//       _items[productIndex] = newProduct;
+//       notifyListeners();
+//     } else {
+//       print('...');
+//     }
+//   }
+//
+//   void deleteProduct(String id) {
+//     _items.removeWhere((product) => product.id == id);
+//     notifyListeners();
+//   }
+// }
+
+  Future<void> updateProduct(String id, Product newProduct) async {
     final productIndex = _items.indexWhere((product) => product.id == id);
     if (productIndex >= 0) {
+      final url =
+          'https://shop-app-backend-8acaf.firebaseio.com/products/$id.json';
+
+      await http.patch(
+        url,
+        body: json.encode(
+          ({
+            'title': newProduct.title,
+            'description': newProduct.description,
+            'imageUrl': newProduct.imageUrl,
+            'price': newProduct.price,
+          }),
+        ),
+      );
+
       _items[productIndex] = newProduct;
       notifyListeners();
     } else {
@@ -124,8 +155,18 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((product) => product.id == id);
-    notifyListeners();
+  Future<void> deleteProduct(String id) async {
+    final url =
+        'https://shop-app-backend-8acaf.firebaseio.com/products/$id.json';
+    try {
+      final response = await http.delete(url);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        _items.removeWhere((product) => product.id == id);
+      }
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }
