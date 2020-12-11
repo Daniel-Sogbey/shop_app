@@ -42,20 +42,7 @@ class CartScreen extends StatelessWidget {
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
                   Consumer<Orders>(
-                    builder: (_, orders, child) => FlatButton(
-                      onPressed: () {
-                        orders.addOrders(
-                            cart.items.values.toList(), cart.totalAmount);
-                        cart.clearCart();
-                      },
-                      textColor: Theme.of(context).primaryColor,
-                      child: Text(
-                        'ORDER NOW',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                        ),
-                      ),
-                    ),
+                    builder: (_, orders, child) => OrderButton(cart: cart),
                   ),
                 ],
               ),
@@ -78,6 +65,62 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      onPressed: widget.cart.totalAmount <= 0 || _isLoading
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await Provider.of<Orders>(context, listen: false).addOrders(
+                widget.cart.items.values.toList(),
+                widget.cart.totalAmount,
+              );
+              Future.delayed(Duration(seconds: 3), () {
+                setState(() {
+                  _isLoading = false;
+                });
+
+                widget.cart.clearCart();
+              });
+            },
+      textColor: Theme.of(context).primaryColor,
+      child: _isLoading
+          ? CircularProgressIndicator()
+          //  LoadingIndicator(
+          //     indicatorType: Indicator.ballBeat,
+          //     color: Theme.of(context).primaryColor,
+          //   )
+          : Container(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                'ORDER NOW',
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+            ),
     );
   }
 }

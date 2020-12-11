@@ -28,14 +28,20 @@ class Product with ChangeNotifier {
     notifyListeners();
 
     try {
-      await http.patch(
+      final response = await http.patch(
         url,
         body: json.encode({
           'isFavorite': isFavorite,
         }),
       );
+
+      if (response.statusCode >= 400) {
+        isFavorite = oldStatus;
+        notifyListeners();
+      }
     } catch (error) {
       isFavorite = oldStatus;
+      notifyListeners();
       throw error;
     }
   }
