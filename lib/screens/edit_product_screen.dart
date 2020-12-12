@@ -105,6 +105,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       try {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
+        // }
+        // on HttpException catch (error) {
+        //   if (error.toString().contains('Permission denied')) {
+        //     Navigator.of(context).pushNamed(AuthScreen.routeName);
+        //   }
       } catch (error) {
         await showDialog<Null>(
             context: context,

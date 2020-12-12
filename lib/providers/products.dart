@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/http_exception.dart';
 import 'product.dart';
 
 class Products with ChangeNotifier {
@@ -118,6 +119,11 @@ class Products with ChangeNotifier {
 
       allItems.add(newProduct);
 
+      final responseData = json.decode(response.body);
+
+      if (responseData['error'] == 'Permission denied') {
+        throw HttpException(message: responseData['error']);
+      }
       notifyListeners();
     } catch (error) {
       throw error;
