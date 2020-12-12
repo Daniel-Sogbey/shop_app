@@ -20,14 +20,18 @@ class OrderItem {
 }
 
 class Orders with ChangeNotifier {
-  List<OrderItem> _orders = [];
+  List<OrderItem> allOrders = [];
+  String authToken;
+
+  Orders({this.authToken, this.allOrders});
 
   List<OrderItem> get orders {
-    return [..._orders];
+    return [...allOrders];
   }
 
   Future<void> fetchAndSetOrders() async {
-    const url = 'https://shop-app-backend-8acaf.firebaseio.com/orders.json';
+    final url =
+        'https://shop-app-backend-8acaf.firebaseio.com/orders.json?auth=$authToken';
 
     final response = await http.get(url);
 
@@ -58,13 +62,14 @@ class Orders with ChangeNotifier {
       );
     });
 
-    _orders = loadedOrders.reversed.toList();
+    allOrders = loadedOrders.reversed.toList();
     notifyListeners();
     print(loadedOrders);
   }
 
   Future<void> addOrders(List<CartItem> cartProducts, double total) async {
-    const url = 'https://shop-app-backend-8acaf.firebaseio.com/orders.json';
+    final url =
+        'https://shop-app-backend-8acaf.firebaseio.com/orders.json?auth=$authToken';
     final timeStamp = DateTime.now();
     final response = await http.post(
       url,
@@ -83,7 +88,7 @@ class Orders with ChangeNotifier {
         },
       ),
     );
-    _orders.insert(
+    allOrders.insert(
       0,
       OrderItem(
         id: json.decode(response.body)['name'],
